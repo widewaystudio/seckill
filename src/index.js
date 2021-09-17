@@ -3,6 +3,7 @@ import './css.less'
 let dataList = {};
 let timeSeries = {};
 let seckillType = 'whole';
+let target = document.getElementsByClassName('contain')[0];
 
 // timeSeries:{[8,9,10,11,12,14],[20],["未开始","抢购中","秒杀结束"]}
 
@@ -10,10 +11,13 @@ let seckillType = 'whole';
 
 
 function init(killType,timeS,dataList){
-    let timeflg =  setInterval(timer,1000);
+    
     timeSeries = processTime(killType,timeS);
      renders(timeSeries);
-  
+     let timer = main();
+     let timeflg =  setInterval(function(){
+         timer(timeSeries)
+        },1000);
 }
 
 function processTime(type,obj){
@@ -35,11 +39,26 @@ function processTime(type,obj){
        
       return queue;
 }
-function timer(){
-//    let stamp = getTime();
-//    console.log(stamp);
+
+function main(){
+    let flg = null;
+    return function (obj){
+        let stamp = new Date(),
+            newFlag,
+            key = stamp.getHours();
+        if(obj[key]){
+            newFlag = stamp.getHours + "#" + compare(stamp,obj[key].startTime,obj[key].endTime); 
+        }
+        if(flg !== newFlag){
+            renders(obj);
+            flg = newFlag;
+        }
+    }
 }
+
+
 function addTimes(start,inter){
+   inter = typeof inter === 'number' ? inter : 0;
     return start + inter * 60000;
 }
 function getTimes(str){
@@ -53,10 +72,30 @@ function getTimes(str){
 
     return nowTime.getTime();
 }
+function compare(now,begin,end){
+    return now < begin ? 0 : now < end ? 1 : 2;
+}
 
-
+function strHandle(str){
+    return ("0"+ str).slice(-2);
+}
 function renders(obj){
-    console.log(obj);
+    
+    let tempS = '',
+       nowT = new Date();
+   for(var key in obj){
+       let tempT = new Date(obj[key].startTime),
+       times = '',
+       stateIndex = 0;
+      times = strHandle( tempT.getHours());
+      times += ":" + strHandle(tempT.getMinutes());
+      if(nowT.getHours() == key){
+         stateIndex = compare(nowT,obj[key].startTime,obj[key].endTime);         
+      }
+      let flg = stateIndex == 1 ? 'active' : '';   
+      tempS += `<div class="item ${flg}" id="${key}"><span>${times}</span><span>${obj[key]["state"][stateIndex]}</span></div>`
+   } 
+   target.innerHTML = tempS;
 
 }
-init('whole',[[8,9,10,11,12,14],[20],["未开始","抢购中","秒杀结束"]],{});
+init('whole',[[0,1,8,9,10,11,12,14],[59],["即将开始","抢购中","秒杀结束"]],{});
