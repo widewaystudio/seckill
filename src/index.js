@@ -1,4 +1,4 @@
-import { render } from 'less';
+import   'less';
 import './css.less'
 let dataList = {};
 let timeSeries = {};
@@ -27,13 +27,18 @@ function processTime(type,obj){
         let tempA = obj[0];
         for(let i = 0; i < tempA.length; i++){
             queue[tempA[i]] = {};
-            let c = obj[1].length;
+            let c = obj[1] == null ? 0 : obj[1].length;
             let s = obj[2].length;
             if(typeof tempA[i] === "object"){
                 queue[tempA[i]]["pre"] = i;
             } 
             queue[tempA[i]]["startTime"] = getTimes(tempA[i]);
-            queue[tempA[i]]["endTime"] = c > i ?  addTimes(queue[tempA[i]]["startTime"],obj[1][i]) : addTimes(queue[tempA[i]]["startTime"],obj[1][c-1])
+            if(c > 0){
+                queue[tempA[i]]["endTime"] = c > i ?  addTimes(queue[tempA[i]]["startTime"],obj[1][i]) : addTimes(queue[tempA[i]]["startTime"],obj[1][c-1])
+            }else{
+                queue[tempA[i]]["endTime"] = i != tempA.length -1 ? addTimes(queue[tempA[i]],getTimes(tempA[i + 1])) : addTimes(queue[tempA[i]],getTimes("23:59:59"))
+            }
+            
             queue[tempA[i]]["state"] = s > i ? typeof obj[2][i] === "object" ? obj[2][i] : obj[2] : typeof obj[2][s-1] ==="object" ? obj[2][s-1] : obj[2];
         }
        
@@ -59,7 +64,7 @@ function main(){
 
 function addTimes(start,inter){
    inter = typeof inter === 'number' ? inter : 0;
-    return start + inter * 60000;
+    return inter < 60 ? start + inter * 60000 : inter;
 }
 function getTimes(str){
     str += "";
@@ -79,23 +84,22 @@ function compare(now,begin,end){
 function strHandle(str){
     return ("0"+ str).slice(-2);
 }
-function renders(obj){
-    
+function renders(obj){    
     let tempS = '',
        nowT = new Date();
-   for(var key in obj){
+   for(let key in obj){
        let tempT = new Date(obj[key].startTime),
        times = '',
        stateIndex = 0;
       times = strHandle( tempT.getHours());
       times += ":" + strHandle(tempT.getMinutes());
-      if(nowT.getHours() == key){
+     
          stateIndex = compare(nowT,obj[key].startTime,obj[key].endTime);         
-      }
+ 
       let flg = stateIndex == 1 ? 'active' : '';   
       tempS += `<div class="item ${flg}" id="${key}"><span>${times}</span><span>${obj[key]["state"][stateIndex]}</span></div>`
    } 
    target.innerHTML = tempS;
 
 }
-init('whole',[[0,1,8,9,10,11,12,14],[59],["即将开始","抢购中","秒杀结束"]],{});
+init('whole',[[0,1,8,9,10,11,12,14,16,17],[],["即将开始","抢购中","秒杀结束"]],{});
