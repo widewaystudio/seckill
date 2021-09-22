@@ -36,10 +36,11 @@ function processTime(type,obj){
             if(c > 0){
                 queue[tempA[i]]["endTime"] = c > i ?  addTimes(queue[tempA[i]]["startTime"],obj[1][i]) : addTimes(queue[tempA[i]]["startTime"],obj[1][c-1])
             }else{
-                queue[tempA[i]]["endTime"] = i != tempA.length -1 ? addTimes(queue[tempA[i]],getTimes(tempA[i + 1])) : addTimes(queue[tempA[i]],getTimes("23:59:59"))
+                queue[tempA[i]]["endTime"] = i != tempA.length -1 ? getTimes(tempA[i + 1]) : getTimes("23:59:59");
             }            
             queue[tempA[i]]["state"] = s > i ? typeof obj[2][i] === "object" ? obj[2][i] : obj[2] : typeof obj[2][s-1] ==="object" ? obj[2][s-1] : obj[2];
         }
+
       return queue;
 }
 
@@ -61,8 +62,8 @@ function main(){
 
 
 function addTimes(start,inter){
-   inter = typeof inter === 'number' ? inter : 0;
-    return inter < 60 ? start + inter * 60000 : inter;
+   inter = inter > 1 ? inter > 60 ? 60 : inter : 1;
+    return  start + inter * 60000 ;
 }
 function getTimes(str){
     str += "";
