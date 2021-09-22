@@ -37,11 +37,9 @@ function processTime(type,obj){
                 queue[tempA[i]]["endTime"] = c > i ?  addTimes(queue[tempA[i]]["startTime"],obj[1][i]) : addTimes(queue[tempA[i]]["startTime"],obj[1][c-1])
             }else{
                 queue[tempA[i]]["endTime"] = i != tempA.length -1 ? addTimes(queue[tempA[i]],getTimes(tempA[i + 1])) : addTimes(queue[tempA[i]],getTimes("23:59:59"))
-            }
-            
+            }            
             queue[tempA[i]]["state"] = s > i ? typeof obj[2][i] === "object" ? obj[2][i] : obj[2] : typeof obj[2][s-1] ==="object" ? obj[2][s-1] : obj[2];
         }
-       
       return queue;
 }
 
@@ -93,8 +91,7 @@ function renders(obj){
        stateIndex = 0;
       times = strHandle( tempT.getHours());
       times += ":" + strHandle(tempT.getMinutes());
-     
-         stateIndex = compare(nowT,obj[key].startTime,obj[key].endTime);         
+      stateIndex = compare(nowT,obj[key].startTime,obj[key].endTime);     
  
       let flg = stateIndex == 1 ? 'active' : '';   
       tempS += `<div class="item ${flg}" id="${key}"><span>${times}</span><span>${obj[key]["state"][stateIndex]}</span></div>`
