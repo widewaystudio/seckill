@@ -1,5 +1,6 @@
 import   'less';
 import './css.less'
+import $ from './jquery.js'
 let dataList = {};
 let timeSeries = {};
 let seckillType = 'whole';
@@ -7,15 +8,13 @@ let target = document.getElementsByClassName('contain')[0];
 
 // timeSeries:{[8,9,10,11,12,14],[20],["未开始","抢购中","秒杀结束"]}
 
-
-
-
 function init(killType,timeS,dataList){
-    
+    let timeflg = null;
     timeSeries = processTime(killType,timeS);
-     renders(timeSeries);
+    let s = getNow();
+     renders(timeSeries,new Date(s()));
      let timer = main();
-     let timeflg =  setInterval(function(){
+     timeflg =  setInterval(function(){
          timer(timeSeries)
         },1000);
 }
@@ -45,18 +44,20 @@ function processTime(type,obj){
 }
 
 function main(){
-    let flg = null;
+    let flg = null,
+    newFlag = null;
+    let s = getNow();
     return function (obj){
-        let stamp = new Date(),
-            newFlag,
+        let stamp = new Date(s()),
             key = stamp.getHours();
         if(obj[key]){
-            newFlag = stamp.getHours + "#" + compare(stamp,obj[key].startTime,obj[key].endTime); 
+            newFlag = key + "#" + compare(stamp,obj[key].startTime,obj[key].endTime); 
         }
         if(flg !== newFlag){
-            renders(obj);
+            renders(obj,stamp);
             flg = newFlag;
-        }
+        } 
+       
     }
 }
 
@@ -66,8 +67,9 @@ function addTimes(start,inter){
     return  start + inter * 60000 ;
 }
 function getTimes(str){
+    let s = getNow();
     str += "";
-     let nowTime = new Date();
+     let nowTime = new Date(s());
      let tempA = str.split(":");
      tempA[0] ? nowTime.setHours(+tempA[0]) : nowTime.setHours(0);
      tempA[1] ? nowTime.setMinutes(+tempA[1]) : nowTime.setMinutes(0);
@@ -83,16 +85,30 @@ function compare(now,begin,end){
 function strHandle(str){
     return ("0"+ str).slice(-2);
 }
-function renders(obj){    
-    let tempS = '',
-       nowT = new Date();
+
+
+function getNow(){
+    let startTime = initTime,
+        begin = new Date();
+        return function(){
+            let end = new Date(),
+            diff =  end  - begin;
+            diff = diff > 2000 ? 1000 : diff;
+            startTime += diff;
+            begin = end;
+            return startTime;            
+        }
+}
+
+function renders(obj,T){    
+    let tempS = '';
    for(let key in obj){
        let tempT = new Date(obj[key].startTime),
        times = '',
        stateIndex = 0;
       times = strHandle( tempT.getHours());
       times += ":" + strHandle(tempT.getMinutes());
-      stateIndex = compare(nowT,obj[key].startTime,obj[key].endTime);     
+      stateIndex = compare(T,obj[key].startTime,obj[key].endTime);     
  
       let flg = stateIndex == 1 ? 'active' : '';   
       tempS += `<div class="item ${flg}" id="${key}"><span>${times}</span><span>${obj[key]["state"][stateIndex]}</span></div>`
@@ -100,4 +116,11 @@ function renders(obj){
    target.innerHTML = tempS;
 
 }
-init('whole',[[0,1,8,9,10,11,12,14,16,17],[],["即将开始","抢购中","秒杀结束"]],{});
+
+window.onload = function(){
+    init('whole',[[0,1,8,9,10,11,12,14,16,17],[],["即将开始","抢购中","秒杀结束"]],{});
+}
+
+
+
+
