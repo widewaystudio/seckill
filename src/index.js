@@ -57,7 +57,6 @@ function main(){
             renders(obj,stamp);
             flg = newFlag;
         } 
-       console.log(stamp);
     }
 }
 
