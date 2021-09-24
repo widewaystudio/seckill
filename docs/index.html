@@ -1,1 +1,31 @@
-<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta http-equiv="X-UA-Compatible" content="IE=edge">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>秒杀程序测试</title>    <script defer src="./docs/bundle.js"></script>    <link rel="stylesheet" href="./docs/main.css"> <script defer src="bundle.js"></script><link href="main.css" rel="stylesheet"></head><body>    <div class="contain">        </div><script>    function newRequest(){        let oS = document.createElement("script");            oS.src = "https://bjtime.cn/nt4.php";            document.body.appendChild(oS);            document.body.removeChild(oS);    }        newRequest();let initTime = ''; function ts(e){    let t = e.split(" ");    t = Math.floor((+t[1] + (+t[0])) * 1000);    initTime = t; }</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秒杀程序测试</title>
+   <script defer src="bundle.js"></script><link href="main.css" rel="stylesheet"></head>
+<body>
+    <div class="contain">
+    
+    </div>
+<script>
+    function newRequest(){
+        let oS = document.createElement("script");
+            oS.src = "https://bjtime.cn/nt4.php";
+            document.body.appendChild(oS);
+            document.body.removeChild(oS);
+    }
+    
+    newRequest();
+
+let initTime = '';
+ function ts(e){
+    let t = e.split(" ");
+    t = Math.floor((+t[1] + (+t[0])) * 1000);
+    initTime = t; 
+}
+</script>
+</body>
+</html>
