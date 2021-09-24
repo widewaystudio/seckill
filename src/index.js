@@ -57,7 +57,7 @@ function main(){
             renders(obj,stamp);
             flg = newFlag;
         } 
-       
+       console.log(stamp);
     }
 }
 
@@ -118,7 +118,7 @@ function renders(obj,T){
 }
 
 window.onload = function(){
-    init('whole',[[0,1,8,9,10,11,12,14,16,17],[],["即将开始","抢购中","秒杀结束"]],{});
+    init('whole',[[0,1,8,9,10,11,12,14,16,17,23],[],["即将开始","抢购中","秒杀结束"]],{});
 }
 
 
