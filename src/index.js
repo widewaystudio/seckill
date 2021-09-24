@@ -1,6 +1,3 @@
-import   'less';
-import './css.less'
-import $ from './jquery.js'
 let dataList = {};
 let timeSeries = {};
 let seckillType = 'whole';
